@@ -1,20 +1,15 @@
 __author__ = 'jeason'
 #coding=utf-8
 
+from common import  singleton
 
+
+
+@singleton
 class WaveCenter(object):
-    ins = ''
     def __init__(self):
-        print 'init'
+        self.receivers = []
         pass
-
-    @staticmethod
-    def instance():
-        if WaveCenter.ins == '':
-            WaveCenter.ins = WaveCenter()
-            WaveCenter.ins.receivers = []
-        return WaveCenter.ins
-
     def registerReceiver(self,receiver):
         self.receivers.append(receiver)
         print self.receivers
@@ -23,3 +18,10 @@ class WaveCenter(object):
         if receiver in self.receivers:
             self.receivers.remove(receiver)
         print self.receivers
+
+    def addWaveData(self,waveData):
+        self.broadcastWave(waveData)
+
+    def broadcastWave(self,waveData):
+        for receiver in self.receivers:
+            receiver(waveData)
