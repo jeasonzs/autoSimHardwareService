@@ -12,6 +12,7 @@ from uuid import uuid4
 
 from dataPush   import DataPushHandler
 from contrl     import ContrlHandler
+from waveCenter import  WaveCenter
 
 
 from tornado.options import define, options
@@ -36,9 +37,14 @@ class Application(tornado.web.Application):
 
 
 if __name__ == '__main__':
-    tornado.options.parse_command_line()
-    app = Application()
-    print 'autoSimHardWareService start on port:'+str(options.port)
-    server = tornado.httpserver.HTTPServer(app)
-    server.listen(options.port)
-    tornado.ioloop.IOLoop.instance().start()
+    # tornado.options.parse_command_line()
+    # app = Application()
+    # print 'autoSimHardWareService start on port:'+str(options.port)
+    # server = tornado.httpserver.HTTPServer(app)
+    # server.listen(options.port)
+    # tornado.ioloop.IOLoop.instance().start()
+
+    WaveCenter.instance().registerReceiver('dasd')
+    WaveCenter.instance().registerReceiver('dasd')
+
+    WaveCenter.instance().unregisterReceiver('dasd')

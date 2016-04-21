@@ -11,7 +11,6 @@ import tornado.options
 from uuid import uuid4
 
 class DataPushHandler(tornado.websocket.WebSocketHandler):
-    timer = ''
     def check_origin(self, origin):
         return True
 
