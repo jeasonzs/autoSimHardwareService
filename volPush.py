@@ -19,14 +19,14 @@ class VolPushHandler(tornado.websocket.WebSocketHandler):
         self.volCenter = VolCenter()
         self.volCenter.registerReceiver(self.push)
         self.sample = 1
-        print 'open'
+        print 'vol open'
 
     def on_close(self):
         self.volCenter.unregisterReceiver(self.push)
-        print 'close'
+        print 'vol close'
 
     def on_message(self, message):
-        print 'message='+message
+        print 'vol message='+message
 
 
     def push(self,data):

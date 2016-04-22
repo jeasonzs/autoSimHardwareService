@@ -5,6 +5,7 @@ __author__ = 'jeason'
 import threading
 import math
 import json
+import  random
 
 import tornado.web
 import tornado.websocket
@@ -17,6 +18,7 @@ from wavePush   import WavePushHandler
 from volPush import  VolPushHandler
 from issueContrl     import IssueContrlHandler
 from waveCenter import  WaveCenter
+from volCenter import  VolCenter
 
 
 from tornado.options import define, options
@@ -42,9 +44,9 @@ class Application(tornado.web.Application):
 
 def startTimer():
     global cnt
-    timer = threading.Timer(1, startTimer)
+    timer = threading.Timer(0.2, startTimer)
     timer.start()
-    waveCenter = WaveCenter()
+
     data = dict()
     data['unit'] = 1
     data['wave'] = []
@@ -54,9 +56,23 @@ def startTimer():
         wave.append(int(tmp))
 
     cnt += 20
-    # print str
-
+    waveCenter = WaveCenter()
     waveCenter.addWaveData(data)
+
+    volData = dict()
+    volData['unit'] = 1
+    volData['vol'] = []
+    ch0 = []
+    ch1 = []
+    for i in range(0,40):
+        ch0.append(random.randint(0,20000))
+        ch1.append(random.randint(0,20000))
+    volData['vol'].append(ch0)
+    volData['vol'].append(ch1)
+    volCenter = VolCenter()
+    volCenter.addVolData(volData)
+
+
 
 if __name__ == '__main__':
     startTimer()
