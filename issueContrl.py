@@ -12,8 +12,10 @@ from uuid import uuid4
 
 
 
-class ContrlHandler(tornado.web.RequestHandler):
+class IssueContrlHandler(tornado.web.RequestHandler):
     def get(self):
+        data = []
+        str = json.dumps(data)
         self.write('hello world!')
     def post(self):
         pass

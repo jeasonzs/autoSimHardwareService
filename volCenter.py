@@ -6,7 +6,7 @@ from common import  singleton
 
 
 @singleton
-class WaveCenter(object):
+class VolCenter(object):
     def __init__(self):
         self.receivers = []
         pass
@@ -16,10 +16,9 @@ class WaveCenter(object):
     def unregisterReceiver(self,receiver):
         if receiver in self.receivers:
             self.receivers.remove(receiver)
+    def addVolData(self,volData):
+        self.__broadcastVol(volData)
 
-    def addWaveData(self,waveData):
-        self.__broadcastWave(waveData)
-
-    def __broadcastWave(self,waveData):
+    def __broadcastVol(self,volData):
         for receiver in self.receivers:
-            receiver(waveData)
+            receiver(volData)

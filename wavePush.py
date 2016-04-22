@@ -11,18 +11,18 @@ import tornado.options
 from uuid import uuid4
 from waveCenter import  WaveCenter
 
-class DataPushHandler(tornado.websocket.WebSocketHandler):
+class WavePushHandler(tornado.websocket.WebSocketHandler):
     def check_origin(self, origin):
         return True
 
     def open(self):
         self.waveCenter = WaveCenter()
-        self.waveCenter.registerReceiver(self.sendWave)
+        self.waveCenter.registerReceiver(self.push)
         self.sample = 1
         print 'open'
 
     def on_close(self):
-        self.waveCenter.unregisterReceiver(self.sendWave)
+        self.waveCenter.unregisterReceiver(self.push)
         print 'close'
 
     def on_message(self, message):
@@ -31,7 +31,7 @@ class DataPushHandler(tornado.websocket.WebSocketHandler):
         self.sample = ctrl['sample']
 
 
-    def sendWave(self,data):
+    def push(self,data):
         wave = data['wave']
         dataToSend = []
         j = 0

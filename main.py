@@ -13,8 +13,9 @@ import tornado.ioloop
 import tornado.options
 from uuid import uuid4
 
-from dataPush   import DataPushHandler
-from contrl     import ContrlHandler
+from wavePush   import WavePushHandler
+from volPush import  VolPushHandler
+from issueContrl     import IssueContrlHandler
 from waveCenter import  WaveCenter
 
 
@@ -27,8 +28,9 @@ class Application(tornado.web.Application):
     def __init__(self):
 
         handlers = [
-            (r'/dataPush.py', DataPushHandler),
-            (r'/contrl.py', ContrlHandler)
+            (r'/wavePush.py', WavePushHandler),
+            (r'/volPush.py', VolPushHandler),
+            (r'/issueContrl.py', IssueContrlHandler)
         ]
 
         settings = {
