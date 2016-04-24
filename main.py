@@ -30,9 +30,9 @@ class Application(tornado.web.Application):
     def __init__(self):
 
         handlers = [
-            (r'/wavePush.py', WavePushHandler),
-            (r'/volPush.py', VolPushHandler),
-            (r'/issueContrl.py', IssueContrlHandler)
+            (r'/service/wavePush.py', WavePushHandler),
+            (r'/service/volPush.py', VolPushHandler),
+            (r'/service/issueContrl.py', IssueContrlHandler)
         ]
 
         settings = {
