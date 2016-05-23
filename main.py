@@ -19,7 +19,9 @@ from volPush import  VolPushHandler
 from issueContrl     import IssueContrlHandler
 from waveCenter import  WaveCenter
 from volCenter import  VolCenter
+from hardwareService import HardwareService
 
+import serial
 
 from tornado.options import define, options
 define("port", default=8000, help="run on the given port", type=int)
@@ -44,7 +46,7 @@ class Application(tornado.web.Application):
 
 def startTimer():
     global cnt
-    timer = threading.Timer(0.2, startTimer)
+    timer = threading.Timer(5, startTimer)
     timer.start()
 
     data = dict()
@@ -71,10 +73,15 @@ def startTimer():
     volData['vol'].append(ch1)
     volCenter = VolCenter()
     volCenter.addVolData(volData)
-
+    hardwareService = HardwareService()
+    hardwareService.staticStart()
 
 
 if __name__ == '__main__':
+    hardwareService = HardwareService()
+
+
+
     startTimer()
     tornado.options.parse_command_line()
     app = Application()
