@@ -46,7 +46,7 @@ class Application(tornado.web.Application):
 
 def startTimer():
     global cnt
-    timer = threading.Timer(5, startTimer)
+    timer = threading.Timer(2, startTimer)
     timer.start()
 
     data = dict()
@@ -74,15 +74,24 @@ def startTimer():
     volCenter = VolCenter()
     volCenter.addVolData(volData)
     hardwareService = HardwareService()
-    hardwareService.staticStart()
+    # hardwareService.staticStart()
+    hardwareService.waveStart(0,100,40)
 
-
+def onceTimer():
+    hardwareService = HardwareService()
+    # hardwareService.staticStop()
+    # hardwareService.waveStart(0,10,40)
+    # hardwareService.staticStart()
+    # hardwareService.volStart(0,10)
+    # hardwareService.volStop(0,10)
+    hardwareService.waveStop(0,2,40)
 if __name__ == '__main__':
     hardwareService = HardwareService()
+    timer = threading.Timer(3, onceTimer)
+    timer.start()
 
 
-
-    startTimer()
+    # startTimer()
     tornado.options.parse_command_line()
     app = Application()
     print 'autoSimHardWareService start on port:'+str(options.port)

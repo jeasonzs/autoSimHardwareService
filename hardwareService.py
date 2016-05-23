@@ -53,6 +53,7 @@ class HardwareService(object):
         self.hardwareSocket = HardwareSocket()
         self.hardwareSocket.registerReceiver(self.__onHardReceive)
         self.hardwareSocket.start()
+        self.buf = ''
         pass
 
     def xorCheck(self,data):
@@ -66,7 +67,32 @@ class HardwareService(object):
 
 
     def __onHardReceive(self,data):
-        print repr(data)
+        data = self.buf+data
+        self.buf = ''
+        size = len(data)
+        pos = 0
+        print 'len='+str(size)+repr(data)
+        while size-pos > 0:
+            cmd = ord(data[pos])
+            if cmd == 0xd0:
+                if size-pos < 6:
+                    self.buf = data[pos:]
+                    break
+                head,ch,num,sample = struct.unpack('>B2HB',data[pos:pos+6])
+                print head,ch,num,sample
+                if 6+num*2+1 > size-pos:
+                    self.buf = data[pos:]
+                    break
+                pos += 6
+                wave = struct.unpack('>'+str(num)+'H',data[pos:pos+num*2])
+                print wave
+                pos += num*2+1
+            else:
+                pos += 1
+        print 'hande end'
+
+
+
 
     def test(self):
         data = struct.pack('8B',1,2,3,4,5,6,7,8)
@@ -76,29 +102,30 @@ class HardwareService(object):
 
 
     def waveStart(self,pos,num,sample):
-        data = struct.pack('2B2H3B',0xb1,0xa5,pos,num,sample,0,0)
+        self.waveNum = num
+        data = struct.pack('>2B2H3B',0xb1,0xa5,pos,num,sample,0,0)
         self.hardwareSocket.send(self.xorCheck(data))
 
     def waveStop(self,pos,num,sample):
-        data = struct.pack('2B2H3B',0xb1,0x00,pos,num,sample,0,0)
+        data = struct.pack('>2B2H3B',0xb1,0x00,pos,num,sample,0,0)
         self.hardwareSocket.send(self.xorCheck(data))
 
     def staticStart(self):
-        data = struct.pack('9B',0xc1,0xa5,0,0,0,0,0,0,0)
+        data = struct.pack('>9B',0xc1,0xa5,0,0,0,0,0,0,0)
         self.hardwareSocket.send(self.xorCheck(data))
 
     def staticStop(self):
-        data = struct.pack('9B',0xc1,0x00,0,0,0,0,0,0,0)
+        data = struct.pack('>9B',0xc1,0x00,0,0,0,0,0,0,0)
         self.hardwareSocket.send(self.xorCheck(data))
 
     def volStart(self,start,end):
-        data = struct.pack('2B2H3B',0xd1,0xa5,start,end,0,0,0)
+        data = struct.pack('>2B2H3B',0xd1,0xa5,start,end,0,0,0)
         self.hardwareSocket.send(self.xorCheck(data))
 
     def volStop(self,start,end):
-        data = struct.pack('2B2H3B',0xd1,0x00,start,end,0,0,0)
+        data = struct.pack('>2B2H3B',0xd1,0x00,start,end,0,0,0)
         self.hardwareSocket.send(self.xorCheck(data))
 
     def issueSet(self,num,type):
-        data = struct.pack('9B',0xe1,0xa5,0,num,type,0,0,0,0)
+        data = struct.pack('>9B',0xe1,0xa5,0,num,type,0,0,0,0)
         self.hardwareSocket.send(self.xorCheck(data))
