@@ -16,9 +16,9 @@ class VolCenter(object):
     def unregisterReceiver(self,receiver):
         if receiver in self.receivers:
             self.receivers.remove(receiver)
-    def addVolData(self,volData):
-        self.__broadcastVol(volData)
+    def addVolData(self,unit,start,end,vol0,vol1):
+        self.__broadcastVol(unit,start,end,vol0,vol1)
 
-    def __broadcastVol(self,volData):
+    def __broadcastVol(self,unit,start,end,vol0,vol1):
         for receiver in self.receivers:
-            receiver(volData)
+            receiver(unit,start,end,vol0,vol1)

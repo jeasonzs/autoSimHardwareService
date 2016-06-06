@@ -29,7 +29,15 @@ class VolPushHandler(tornado.websocket.WebSocketHandler):
         print 'vol message='+message
 
 
-    def push(self,data):
+    def push(self,unit,start,end,vol0,vol1):
+        data = dict()
+        data['unit'] = unit
+        data['start'] = start
+        data['end'] = end
+        data['vol'] = []
+        data['vol'].append(vol0)
+        data['vol'].append(vol1)
+
         str = json.dumps(data)
         self.write_message(str)
 

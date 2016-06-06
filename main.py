@@ -22,7 +22,7 @@ from volCenter import  VolCenter
 from hardwareService import HardwareService
 
 import serial
-
+import sys,threading,time;
 from tornado.options import define, options
 define("port", default=8000, help="run on the given port", type=int)
 
@@ -46,36 +46,26 @@ class Application(tornado.web.Application):
 
 def startTimer():
     global cnt
-    timer = threading.Timer(2, startTimer)
+    cnt += 5
+#start timer
+    timer = threading.Timer(1, startTimer)
     timer.start()
-
-    data = dict()
-    data['unit'] = 1
-    data['wave'] = []
-    wave = data['wave']
+#the wave
+    wave = []
     for i in range(0,5000):
         tmp = 1.3 * 1000 *math.sin((2*i+cnt) * math.pi / 180)
         wave.append(int(tmp))
-
-    cnt += 20
     waveCenter = WaveCenter()
-    waveCenter.addWaveData(data)
-
-    volData = dict()
-    volData['unit'] = 1
-    volData['vol'] = []
-    ch0 = []
-    ch1 = []
+    waveCenter.addWaveData(1,1,wave)
+#vols
+    vol0 = []
+    vol1 = []
     for i in range(0,40):
-        ch0.append(random.randint(0,20000))
-        ch1.append(random.randint(0,20000))
-    volData['vol'].append(ch0)
-    volData['vol'].append(ch1)
+        vol0.append(random.randint(0,20000))
+        vol1.append(random.randint(0,20000))
     volCenter = VolCenter()
-    volCenter.addVolData(volData)
-    hardwareService = HardwareService()
-    # hardwareService.staticStart()
-    hardwareService.waveStart(0,100,40)
+    volCenter.addVolData(1,0,39,vol0,vol1)
+
 
 def onceTimer():
     hardwareService = HardwareService()
@@ -86,9 +76,19 @@ def onceTimer():
     # hardwareService.volStop(0,10)
     hardwareService.waveStop(0,2,40)
 if __name__ == '__main__':
+    # port = serial.Serial('com3', 115200, timeout=5)
+    # print port.isOpen()
+    # data = port.read(1)
+    # n = port.inWaiting()
+    # data += port.read(n)
+    # print data
+    # port.close()
+    # pass
+
+
     hardwareService = HardwareService()
-    timer = threading.Timer(3, onceTimer)
-    timer.start()
+    # timer = threading.Timer(3, onceTimer)
+    # timer.start()
 
 
     # startTimer()

@@ -17,9 +17,9 @@ class WaveCenter(object):
         if receiver in self.receivers:
             self.receivers.remove(receiver)
 
-    def addWaveData(self,waveData):
-        self.__broadcastWave(waveData)
+    def addWaveData(self,unit,sample,wave):
+        self.__broadcastWave(unit,sample,wave)
 
-    def __broadcastWave(self,waveData):
+    def __broadcastWave(self,unit,sample,wave):
         for receiver in self.receivers:
-            receiver(waveData)
+            receiver(unit,sample,wave)

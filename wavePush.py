@@ -31,15 +31,12 @@ class WavePushHandler(tornado.websocket.WebSocketHandler):
         self.sample = ctrl['sample']
 
 
-    def push(self,data):
-        wave = data['wave']
-        dataToSend = []
-        j = 0
-        for i in range(0,720):
-            dataToSend.append(wave[j])
-            j += self.sample
-        data['wave'] = dataToSend
-        str = json.dumps(data)
+    def push(self,unit,sample,wave):
+        data = dict()
+        data['unit'] = unit
+        data['sample'] = sample
+        data['wave'] = wave[0::self.sample][0:800]
 
-        self.write_message(str)
+        strJson = json.dumps(data)
+        self.write_message(strJson)
 
