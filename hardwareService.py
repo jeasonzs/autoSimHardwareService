@@ -8,7 +8,7 @@ import struct
 from waveCenter import  WaveCenter
 from volCenter import VolCenter
 import serial
-
+import platform
 
 class HardwareSocket(threading.Thread):
     def __init__(self):
@@ -55,7 +55,12 @@ class HardwareSocket(threading.Thread):
 class HardwareSerial(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
-        self.port = serial.Serial('com3', 115200, timeout=4)
+        sysstr = platform.system()
+        print sysstr
+        if sysstr == 'Windows':
+            self.port = serial.Serial('com2', 115200, timeout=4)
+        else:
+            self.port = serial.Serial('/dev/ttyS0', 115200, timeout=4)
         pass
     def __del__(self):
         self.stop()
@@ -90,6 +95,9 @@ class HardwareService(object):
         self.hardware.registerReceiver(self.__onHardReceive)
         self.hardware.start()
         self.buf = ''
+        self.issueTable = [0]*128
+        self.volStart(0,32)
+        self.waveStart(0,1,40)
         pass
 
     def xorCheck(self,data):
@@ -185,5 +193,14 @@ class HardwareService(object):
         self.hardware.send(self.xorCheck(data))
 
     def issueSet(self,num,type):
+        self.issueTable[num] = type
         data = struct.pack('>9B',0xe1,0xa5,0,num,type,0,0,0,0)
+        self.hardware.send(self.xorCheck(data))
+
+    def issueGet(self,num):
+        return self.issueTable[num]
+
+    def issueClear(self):
+        self.issueTable = [0]*128
+        data = struct.pack('>9B',0xe1,0,0,0,0,0,0,0,0)
         self.hardware.send(self.xorCheck(data))

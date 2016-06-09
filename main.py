@@ -76,16 +76,6 @@ def onceTimer():
     # hardwareService.volStop(0,10)
     hardwareService.waveStop(0,2,40)
 if __name__ == '__main__':
-    # port = serial.Serial('com3', 115200, timeout=5)
-    # print port.isOpen()
-    # data = port.read(1)
-    # n = port.inWaiting()
-    # data += port.read(n)
-    # print data
-    # port.close()
-    # pass
-
-
     hardwareService = HardwareService()
     # timer = threading.Timer(3, onceTimer)
     # timer.start()
